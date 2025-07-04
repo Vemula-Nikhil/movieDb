@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const {open} = require('sqlite')
 const sqlite3 = require('sqlite3')
+const cors = require('cors');
 
 const dbPath = path.join(__dirname, 'movieDatabase.db')
 const app = express()
@@ -17,8 +18,8 @@ const initialiseDbAndServer = async () => {
       driver: sqlite3.Database,
     })
 
-    app.listen(3000, () => {
-      console.log('Server has started on port 3000')
+    app.listen(4000, () => {
+      console.log('Server has started on port 4000')
     })
   } catch (e) {
     console.log(e.message)

@@ -7,6 +7,7 @@ const cors = require('cors');
 const dbPath = path.join(__dirname, 'movieDatabase.db')
 const app = express()
 
+app.use(cors());
 app.use(express.json())
 
 let db

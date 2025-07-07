@@ -31,29 +31,29 @@ const initialiseDbAndServer = async () => {
 initialiseDbAndServer()
 
 const hasSearchProperty = requestQuery => {
-  return requestQuery.search_q !== undefined
+  return requestQuery.search_q !== undefined || requestQuery.query !== undefined
 }
 
-const searchMovie = async (search_q) => {
-    const getMoviesQuery = `
+const searchMovie = async (query) => {
+  const getMoviesQuery = `
     SELECT * FROM movies 
-    WHERE title LIKE '%${search_q}%';
-    `
-    const movies = await db.all(getMoviesQuery)
-    return movies
+    WHERE title LIKE '%${query}%';
+  `
+  const movies = await db.all(getMoviesQuery)
+  return movies
 }
 
 app.get('/', async (req, res) => {
   const {search_q} = req.query;
 
   if(hasSearchProperty(req.query)){
-    const movies = await searchMovie(search_q)
-    return res.send(movies)
+    const movies = await searchMovie(query)
+  return res.send({ results: movies })
   }
   
   const getQuery = `SELECT * FROM movies`;
   const movieDetails = await db.all(getQuery);
-  res.send(movieDetails);
+  res.send({ results: movieDetails });
 })
 
 app.get('/top-rated', async (req, res) => {
@@ -65,12 +65,12 @@ app.get('/top-rated', async (req, res) => {
         WHERE rating >= 8 AND title LIKE '%${search_q}%';
         `
     const movies = await db.all(getMoviesQuery)
-    return res.send(movies)
+    return res.send({ results: movies })
   }
 
   const getQuery = `SELECT * FROM movies WHERE rating >= 8`
   const movieDetails = await db.all(getQuery)
-  res.send(movieDetails)
+  res.send({ results: movieDetails })
 })
 
 app.get('/upcoming', async (req, res) => {
@@ -100,7 +100,7 @@ app.get('/upcoming', async (req, res) => {
         }
     })
 
-    res.send(releaseDates)
+    res.send({ results: releaseDates })
 })
 
 app.get('/movie/:id', async(req, res) => {

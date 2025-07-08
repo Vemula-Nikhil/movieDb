@@ -7,8 +7,19 @@ const cors = require('cors');
 const dbPath = path.join(__dirname, 'movieDatabase.db')
 const app = express()
 
-app.use(cors());
 app.use(express.json())
+
+const allowedOrigins = ['https://nikhilz6henrjscpo4lio.drops.nxtwave.tech'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}));
 
 let db
 
